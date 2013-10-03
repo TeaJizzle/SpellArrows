@@ -1,0 +1,95 @@
+# default config.yml
+#
+# ** whether left-clicking will shuffle arrows in inventory.
+# ** Toggled by using the sortarrows command.
+# sortArrows:
+#   Player: true/false
+#
+# arrowTypes:
+#   displayName:
+#     <List Number>: "Arrow of <effect>"
+#   potionID:
+#     <List Number>: <ID of crafting ingredient potion>
+#
+#   ** <List Number> Must be a number stored in a string.
+#
+#   ** Some arrows are listed twice.
+#   ** This is because survival and creative potions have different Item IDs,
+#   ** requiring multiple recipes for that arrow type.
+#
+#   ** Arrow Types can be removed from the plugin, by removing them from this file.
+
+sortArrows:
+
+arrowTypes:
+  displayName:
+    "1": "Arrow of Poison"
+    2: "Arrow of Weakness"
+    3: "Arrow of Slowness"
+    4: "Arrow of Harming"
+    5: "Arrow of Poison (extended)"
+    6: "Arrow of Weakness (extended)"
+    7: "Arrow of Slowness (extended)"
+    8: "Arrow of Poison II"
+    9: "Arrow of Harming II"
+    10: "Arrow of Regeneration"
+    11: "Arrow of Swiftness"
+    12: "Arrow of Fire Resistance"
+    13: "Arrow of Healing"
+    14: "Arrow of Night Vision"
+    15: "Arrow of Strength"
+    16: "Arrow of Invisibility"
+    17: "Arrow of Regeneration (extended)"
+    18: "Arrow of Swiftness (extended)"
+    19: "Arrow of Fire Resistance (extended)"
+    20: "Arrow of Night Vision (extended)"
+    21: "Arrow of Strength (extended)"
+    22: "Arrow of Invisibility (extended)"
+    23: "Arrow of Regeneration II"
+    24: "Arrow of Swiftness II"
+    25: "Arrow of Healing II"
+    26: "Arrow of Strength II"
+
+    27: "Arrow of Weakness"
+    28: "Arrow of Slowness"
+    29: "Arrow of Harming"
+    30: "Arrow of Fire Resistance"
+    31: "Arrow of Healing"
+    32: "Arrow of Night Vision"
+    33: "Arrow of Invisibility"
+
+  potionID:
+    1: 8196
+    2: 8200
+    3: 8202
+    4: 8204
+    5: 8260
+    6: 8264
+    7: 8266
+    8: 8228
+    9: 8236
+    10: 8193
+    11: 8194
+    12: 8195
+    13: 8197
+    14: 8198
+    15: 8201
+    16: 8206
+    17: 8257
+    18: 8258
+    19: 8259
+    20: 8262
+    21: 8265
+    22: 8270
+    23: 8225
+    24: 8226
+    25: 8229
+    26: 8233
+
+    27: 8232
+    28: 8234
+    29: 8268
+    30: 8227
+    31: 8261
+    32: 8230
+    33: 8238

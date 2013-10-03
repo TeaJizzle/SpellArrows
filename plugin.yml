@@ -1,0 +1,14 @@
+name: SpellArrows
+main: com.outlook.corey_young.spellarrows.SpellArrows
+version: 0.2
+
+commands:
+  sortarrows:
+    description: Toggles arrow sorting.
+    permission: SpellArrows.sortarrows
+    permission-message: You don't have permission to execute that command.
+
+permissions:
+  SpellArrows.sortarrows:
+    description: allows you to sort arrows by left clicking.
+    default: true
