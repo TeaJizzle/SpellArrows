@@ -13,9 +13,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -95,6 +97,19 @@ public class MyListener implements Listener {
 					}
 				}
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+		if (SpellArrows.arrowMap.containsKey(event.getItem().getEntityId())) {
+			event.setCancelled(true);
+			event.getItem().remove();
+			ItemStack itemStack = event.getItem().getItemStack();
+			ItemMeta itemMeta = itemStack.getItemMeta();
+			itemMeta.setDisplayName(SpellArrows.arrowMap.get(event.getItem().getEntityId()));
+			itemStack.setItemMeta(itemMeta);
+			event.getPlayer().getInventory().addItem(itemStack);
 		}
 	}
 	

@@ -36,7 +36,8 @@ public final class SpellArrows extends JavaPlugin {
 		saveConfig();
 		//load config player settings as Map, then copy into HashMap
 		if (getConfig().contains("sortArrows")) {
-			Map<String, Object> configMap = getConfig().getConfigurationSection("sortArrows").getValues(false);
+			Map<String, Object> configMap 
+				= getConfig().getConfigurationSection("sortArrows").getValues(false);
 			for (String playerName : configMap.keySet()) {
 				boolean sortArrows = (boolean) configMap.get(playerName);
 				sortArrowMap.put(playerName, sortArrows);
@@ -44,8 +45,10 @@ public final class SpellArrows extends JavaPlugin {
 		}
 		//load config arrowTypes as Maps, then copy into HashMap
 		if (getConfig().contains("arrowTypes.displayName")) {
-			Map<String, Object> configNameMap = getConfig().getConfigurationSection("arrowTypes.displayName").getValues(false);
-			Map<String, Object> configIDMap = getConfig().getConfigurationSection("arrowTypes.potionID").getValues(false);
+			Map<String, Object> configNameMap
+				= getConfig().getConfigurationSection("arrowTypes.displayName").getValues(false);
+			Map<String, Object> configIDMap
+				= getConfig().getConfigurationSection("arrowTypes.potionID").getValues(false);
 			for (String number : configNameMap.keySet()) {
 				String displayName = (String) configNameMap.get(number);
 				int potionID = (int) configIDMap.get(number);
