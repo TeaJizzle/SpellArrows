@@ -1,6 +1,6 @@
 name: SpellArrows
 main: com.outlook.corey_young.spellarrows.SpellArrows
-version: 0.2.1
+version: 0.2.2
 
 commands:
   sortarrows:

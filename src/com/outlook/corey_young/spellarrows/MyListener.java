@@ -31,11 +31,11 @@ public class MyListener implements Listener {
 		if (SpellArrows.sortArrowMap.containsKey(player.getName())) {
 			sortArrows = SpellArrows.sortArrowMap.get(player.getName());
 		}
-		if (sortArrows) {
+		Inventory inventory = player.getInventory();
+		if (sortArrows && inventory.first(Material.ARROW) != -1) {
 			if (event.getAction() == Action.LEFT_CLICK_AIR
 					|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				if (player.getItemInHand().getType() == Material.BOW) {
-					Inventory inventory = player.getInventory();
 					//Sort arrowStacks
 					ItemStack[] arrowStacks = getArrowStacks(inventory);
 					int[] arrowStackIndices = getArrowStackIndices(inventory);
@@ -62,10 +62,13 @@ public class MyListener implements Listener {
 		if (event.getEntityType() == EntityType.PLAYER) {
 			Player player = (Player) (event.getEntity());
 			PlayerInventory inventory = player.getInventory();
-			ItemStack arrowConsumed = inventory.getItem(inventory.first(Material.ARROW));
-			String arrowType = arrowConsumed.getItemMeta().getDisplayName();
-			Arrow arrow =  (Arrow) event.getProjectile();
-			SpellArrows.arrowMap.put(arrow.getEntityId(), arrowType);
+			int itemPos = inventory.first(Material.ARROW);
+			if (itemPos != -1) {
+				ItemStack arrowConsumed = inventory.getItem(itemPos);
+				String arrowType = arrowConsumed.getItemMeta().getDisplayName();
+				Arrow arrow =  (Arrow) event.getProjectile();
+				SpellArrows.arrowMap.put(arrow.getEntityId(), arrowType);
+			}
 		}
 	}
 	
@@ -96,6 +99,7 @@ public class MyListener implements Listener {
 						Bukkit.broadcastMessage("Error: Cannot apply potion effect!");
 					}
 				}
+				SpellArrows.arrowMap.remove(arrow.getEntityId());
 			}
 		}
 	}
@@ -110,6 +114,7 @@ public class MyListener implements Listener {
 			itemMeta.setDisplayName(SpellArrows.arrowMap.get(event.getItem().getEntityId()));
 			itemStack.setItemMeta(itemMeta);
 			event.getPlayer().getInventory().addItem(itemStack);
+			SpellArrows.arrowMap.remove(event.getItem().getEntityId());
 		}
 	}
 	
