@@ -2,6 +2,7 @@ package com.outlook.corey_young.spellarrows;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -68,6 +69,20 @@ public class MyListener implements Listener {
 				String arrowType = arrowConsumed.getItemMeta().getDisplayName();
 				Arrow arrow =  (Arrow) event.getProjectile();
 				SpellArrows.arrowMap.put(arrow.getEntityId(), arrowType);
+				if (event.getBow().getEnchantmentLevel(Enchantment.ARROW_INFINITE) > 0)
+				{
+					if (isMagicArrow(arrowConsumed.getItemMeta().getDisplayName()))
+					{
+						int amount = arrowConsumed.getAmount();
+						if (amount > 1)
+						{
+							arrowConsumed.setAmount(amount - 1);
+							inventory.setItem(itemPos, arrowConsumed);
+						} else {
+							inventory.setItem(itemPos, null);
+						}
+					}
+				}
 			}
 		}
 	}
