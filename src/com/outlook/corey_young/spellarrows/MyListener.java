@@ -22,6 +22,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 public class MyListener implements Listener {
 	
@@ -68,7 +69,11 @@ public class MyListener implements Listener {
 				ItemStack arrowConsumed = inventory.getItem(itemPos);
 				String arrowType = arrowConsumed.getItemMeta().getDisplayName();
 				Arrow arrow =  (Arrow) event.getProjectile();
-				SpellArrows.arrowMap.put(arrow.getEntityId(), arrowType);
+				
+				if(isArcherClass(player)) {
+					SpellArrows.arrowMap.put(arrow.getEntityId(), arrowType);
+				}
+				
 				if (event.getBow().getEnchantmentLevel(Enchantment.ARROW_INFINITE) > 0)
 				{
 					if (isMagicArrow(arrowConsumed.getItemMeta().getDisplayName()))
@@ -96,7 +101,7 @@ public class MyListener implements Listener {
 			if (SpellArrows.arrowMap.containsKey(arrow.getEntityId())) {
 				String arrowType = SpellArrows.arrowMap.get(arrow.getEntityId());
 				if (isMagicArrow(arrowType)) {
-					event.setDamage(0);
+					//event.setDamage(0);
 				}
 				if (arrowType != null) {
 					//Negative Effects
@@ -109,9 +114,48 @@ public class MyListener implements Listener {
 					if (ID != -1) {
 						//Fix this later
 						Potion potion = Potion.fromDamage(ID);
-						potion.apply(entity);
+						//potion.apply(entity);
+						if (!potion.getType().isInstant())
+						{
+							double vel = arrow.getVelocity().length() * 33.334d;
+							double dis = arrow.getShooter().getLocation().distance(entity.getLocation());
+							int dur = getArrowPotDuration(potion, vel, dis);
+							PotionEffectType type = potion.getType().getEffectType();
+							//check to see if the entity already has the effect and force the new effect if duration is longer, or if level is higher
+							if (entity.hasPotionEffect(type)) {
+								for(PotionEffect effect : entity.getActivePotionEffects()) {
+									if (effect.getType().equals(type)) {
+										if (effect.getDuration() < dur || effect.getAmplifier() < potion.getLevel() - 1) {
+											entity.addPotionEffect(new PotionEffect(type, dur, potion.getLevel() - 1), true);
+										}
+									}
+								}
+							} else {
+								entity.addPotionEffect(new PotionEffect(type, dur, potion.getLevel() - 1));
+							}
+							//Bukkit.broadcastMessage("Velocity: " + Double.toString(vel)); //debug
+							//Bukkit.broadcastMessage("Distance: " + Double.toString(dis)); //debug
+							//Bukkit.broadcastMessage("Duration: " + Integer.toString(dur/20)); //debug
+						} else {
+							//convert instant damage to bow damage
+							if (potion.getType().getEffectType().getName().toString() == "HARM")
+							{
+								double dis = arrow.getShooter().getLocation().distance(entity.getLocation());
+								double vel = arrow.getVelocity().length() * 33.334d;
+								double dmg = event.getDamage() + ((potion.getLevel() * 6d * (dis/12.5d)) * (vel/100d));
+								if (dmg > 120d) {
+									dmg = 120d;
+								}
+								
+								event.setDamage(dmg);
+								//Bukkit.broadcastMessage("Damage: " + Double.toString(dmg)); //debug
+							} else {
+							potion.apply(entity);
+							}
+						}
+						
 					} else {
-						Bukkit.broadcastMessage("Error: Cannot apply potion effect!");
+						//Bukkit.broadcastMessage("Error: Cannot apply potion effect!");
 					}
 				}
 				SpellArrows.arrowMap.remove(arrow.getEntityId());
@@ -119,8 +163,62 @@ public class MyListener implements Listener {
 		}
 	}
 	
+	public boolean isArcherClass(Player player) {
+		PlayerInventory inv = player.getInventory();
+		if (inv.getHelmet().getType().equals(Material.LEATHER_HELMET) && inv.getChestplate().getType().equals(Material.LEATHER_CHESTPLATE) && inv.getLeggings().getType().equals(Material.LEATHER_LEGGINGS) && inv.getBoots().getType().equals(Material.LEATHER_BOOTS)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public int getArrowPotDuration(Potion potion, double velocity, double distance) {
+		
+		int d = 0;
+		String pe = potion.getType().getEffectType().getName().toString();
+		switch (pe) {
+		case "REGENERATION": d = 45;
+				break;
+		case "SPEED": d = 180;
+				break;
+		case "FIRE_RESISTANCE": d = 180;
+				break;
+		case "NIGHT_VISION": d = 180;
+				break;
+		case "INVISIBILITY": d = 180;
+				break;
+		case "POISON": d = 45;
+				break;
+		case "WEAKNESS": d = 90;
+				break;
+		case "SLOW": d = 90;
+				break;
+		case "INCREASE_DAMAGE": d = 180;
+				break;
+		default: d = 0;
+				break;
+		}
+		//Bukkit.broadcastMessage(pe); //debug
+		if(d > 0)
+		{
+			if (potion.hasExtendedDuration()) {
+				d = (int) Math.round(d * 2.667d);
+				//Bukkit.broadcastMessage("extended"); //debug
+			}
+			if (potion.getLevel() > 1) {
+				d = d/2;
+				//Bukkit.broadcastMessage("tier 2"); //debug
+			}
+			d = (int) Math.round(d * (distance/75d) * (velocity/100d));
+			
+		}
+		
+		return d*20; //convert seconds to ticks	
+	}
+	
 	@EventHandler
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+		//make this configurable later
 		if (SpellArrows.arrowMap.containsKey(event.getItem().getEntityId())) {
 			event.setCancelled(true);
 			event.getItem().remove();
